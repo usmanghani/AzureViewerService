@@ -2,3 +2,5 @@ Django
 psycopg2
 docutils
 requests
+south
+M2Crypto
