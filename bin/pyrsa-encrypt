@@ -4,6 +4,7 @@ __requires__ = 'rsa==3.0.1'
 import sys
 from pkg_resources import load_entry_point
 
-sys.exit(
-   load_entry_point('rsa==3.0.1', 'console_scripts', 'pyrsa-encrypt')()
-)
+if __name__ == '__main__':
+    sys.exit(
+        load_entry_point('rsa==3.0.1', 'console_scripts', 'pyrsa-encrypt')()
+    )
