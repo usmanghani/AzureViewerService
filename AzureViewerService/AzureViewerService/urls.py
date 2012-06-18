@@ -13,7 +13,9 @@ urlpatterns = patterns('',
     url(r'^kick/$', 'AzureViewerService.views.kick', name='kick'),
     url(r'^time/plus/(\d{1,2})/$', 'AzureViewerService.views.hours_ahead', name='hours_ahead'),
     url(r'^meta/$', 'AzureViewerService.views.display_meta', name='meta'),
-    
+    url(r'^hilal/$', 'AzureViewerService.hilal.hilal_index', name='hilal_index'),
+    url(r'^hilal/(\w+)/$', 'AzureViewerService.hilal.hilal', name='hilal'),
+
     # Examples:
     url(r'^$', 'AzureViewerService.views.home', name='home'),
     # url(r'^AzureViewerService/', include('AzureViewerService.foo.urls')),

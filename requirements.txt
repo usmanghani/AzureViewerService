@@ -4,3 +4,6 @@ docutils
 requests
 south
 M2Crypto
+MySQL-python
+BeautifulSoup
+simplejson
