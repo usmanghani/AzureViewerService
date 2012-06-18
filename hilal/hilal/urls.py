@@ -14,7 +14,7 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
-    url(r'^hilal/$', 'hilal.views.hilal_index', name='hilal_index'),
-    url(r'^hilal/(\w+)/$', 'hilal.views.hilal', name='hilal'),
+    url(r'^$', 'hilal.views.hilal_index', name='hilal_index'),
+    url(r'^(\w+)/$', 'hilal.views.hilal', name='hilal'),
 
 )
