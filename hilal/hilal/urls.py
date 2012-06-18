@@ -14,7 +14,10 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
-    url(r'^$', 'hilal.views.hilal_index', name='hilal_index'),
-    url(r'^(\w+)/$', 'hilal.views.hilal', name='hilal'),
-
+    url(r'^hilal/$', 'hilal.views.hilal_index', name='hilal_index'),
+    url(r'^hilal/(?P<month>\w+)/$', 'hilal.views.hilal', name='hilal'),
+    url(r'^pray/(?P<year>\d{2,4})/(?P<location>\w+)/$', 'hilal.views.pray_year', name='pray_year'),
+    url(r'^pray/(?P<year>\d{2,4})/(?P<month>\d{1,2})/(?P<location>\w+)/$', 'hilal.views.pray_month', name='pray_month'),
+    url(r'^pray/(?P<year>\d{2,4})/(?P<month>\d{1,2})/(?P<day>\d{1,2})/(?P<location>\w+)/$', 'hilal.views.pray_date', name='pray_date'),
+    url(r'^pray/(?P<location>\w+)/$', 'hilal.views.pray', name='pray'),
 )
