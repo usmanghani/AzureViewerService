@@ -7,3 +7,4 @@ M2Crypto
 MySQL-python
 BeautifulSoup
 simplejson
+dj-database-url
