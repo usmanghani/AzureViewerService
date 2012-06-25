@@ -3,12 +3,14 @@ from BeautifulSoup import BeautifulSoup
 from django.core import serializers
 from praytimes import PrayTimes
 from datetime import date, timedelta
+from math import floor
+from lxml import objectify
+from lxml import etree
 
 import os
 import os.path
 import requests
 import simplejson
-
 
 DEFAULT_METHOD = 'Karachi'
 DEFAULT_ASR = 'Hanafi'
@@ -16,6 +18,18 @@ DEFAULT_ASR = 'Hanafi'
 p = PrayTimes(DEFAULT_METHOD)
 p.setMethod(DEFAULT_METHOD)
 p.adjust({'asr':DEFAULT_ASR})
+
+def timezone(lat, lng):
+	r = requests.get("http://www.earthtools.org/timezone/%s/%s" % (lat, lng))
+	root = objectify.fromstring(r.text.encode('ascii'))
+	
+	dst = False
+	if root.dst == 'Unknown':
+		dst = False
+	else:
+		dst = bool(root.dst)
+
+	return int(root.offset), dst  
 
 def calculate_pray(start_date, end_date, location, method, asr_method):
 	try:
@@ -31,11 +45,13 @@ def calculate_pray(start_date, end_date, location, method, asr_method):
 			lng = loc['lng']
 			
 			day_count = (end_date - start_date).days + 1
-			
+			# import pdb; pdb.set_trace()
+			offset, dst = timezone(lat, lng)
+
 			response = []
 			for single_date in [d for d in (start_date + timedelta(n) for n in range(day_count)) if d < end_date]:
-				times = p.getTimes(single_date, (lat, lng), -8, True)
-				response.append({'date':single_date.strftime("%Y-%m-%d"), 'address': address, 'latitude' : lat, 'longitude' : lng, 'times' : times})
+				times = p.getTimes(single_date, (lat, lng), offset, dst)
+				response.append({'date':single_date.strftime("%Y-%m-%d"), 'address': address, 'latitude' : lat, 'longitude' : lng, 'method': method, 'asr_method' : asr_method, 'offset' : offset, 'dst' : dst, 'times' : times})
 
 			return HttpResponse(simplejson.dumps(response), content_type='application/json')
 		else:

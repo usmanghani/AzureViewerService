@@ -27,7 +27,7 @@ DEALINGS IN THE SOFTWARE.
 
 Download-URL: http://cheeseshop.python.org/pypi/pytz
 Description: World modern and historical timezone definitions, implemented as
-        Python tzinfo subclasses suitable for use my Python's datetime module.
+        Python tzinfo subclasses suitable for use my Python's datetime module. 
         Timezone information was provided by the Olson Timezone database.
         Using these timezone definitions resolves all ambiguous daylight savings
         time transitions. All DST trantions have been tested against the reference

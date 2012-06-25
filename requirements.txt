@@ -6,3 +6,4 @@ south
 BeautifulSoup
 simplejson
 dj-database-url
+lxml
