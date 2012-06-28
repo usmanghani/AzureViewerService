@@ -20,16 +20,24 @@ p.setMethod(DEFAULT_METHOD)
 p.adjust({'asr':DEFAULT_ASR})
 
 def timezone(lat, lng):
-	r = requests.get("http://www.earthtools.org/timezone/%s/%s" % (lat, lng))
-	root = objectify.fromstring(r.text.encode('ascii'))
-	
-	dst = False
-	if root.dst == 'Unknown':
-		dst = False
-	else:
-		dst = bool(root.dst)
+	r = requests.get("http://api.geonames.org/timezoneJSON?lat=%s&lng=%s&username=usmanghani" % (lat, lng))
+	json = simplejson.loads(r.text)
 
-	return int(root.offset), dst  
+	rawOffset = json['rawOffset']
+	dstOffset = json['dstOffset']
+	dst = rawOffset != dstOffset
+
+	# r = requests.get("http://www.earthtools.org/timezone/%s/%s" % (lat, lng))
+	# root = objectify.fromstring(r.text.encode('ascii'))
+	
+	# dst = False
+	# if root.dst == 'Unknown':
+	# 	dst = False
+	# else:
+	# 	dst = bool(root.dst)
+
+	# return int(root.offset), dst  
+	return int(rawOffset), dst
 
 def calculate_pray(start_date, end_date, location, method, asr_method):
 	try:

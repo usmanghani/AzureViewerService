@@ -40,3 +40,15 @@ root = objectify.fromstring(r.text.encode('ascii'))
 pprint(root.offset)
 pprint(root.dst)
 
+import simplejson
+r = get('http://api.geonames.org/timezoneJSON?lat=47.6097&lng=-122.3331&username=usmanghani')
+json = simplejson.loads(r.text)
+
+rawOffset = json['rawOffset']
+dstOffset = json['dstOffset']
+dst = rawOffset != dstOffset
+
+print(rawOffset)
+print(dstOffset)
+print(dst)
+
