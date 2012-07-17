@@ -3,4 +3,7 @@ psycopg2
 docutils
 requests
 south
-M2Crypto
+BeautifulSoup
+simplejson
+dj-database-url
+lxml
