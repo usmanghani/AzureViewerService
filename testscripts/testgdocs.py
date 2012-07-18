@@ -20,7 +20,7 @@ CONFIG = {
 	'IGNORE_CONFLICT_FILES' : True,
 	'TEMPLATE_FILENAME' : 'lesson_template.php',
 	'TEST_FILE_PREFIX' : 'lesson_',
-	'OVERWRITE_EXISTING_TEST_FILES' : True,
+	'OVERWRITE_EXISTING_TEST_FILES' : False,
 }
 
 if not os.path.exists(CONFIG['VIDEOS_FOLDER']):
