@@ -24,6 +24,7 @@ CONFIG = {
 	'URL_DUMP_PAGE' : 'urldumps.txt',
 	'URL_PREFIX_FOR_DUMPS' : 'http://test.lisanic.com/',
 	'URL_DUMP_TEMPLATE_FILE' : 'urldumps_template.html',
+	'DOWNLOAD_FLV_ONLY' : True,
 }
 
 if not os.path.exists(CONFIG['VIDEOS_FOLDER']):
@@ -35,32 +36,46 @@ password = getpass.getpass()
 docsClient = gdata.docs.service.DocsService()
 docsClient.ClientLogin(username, password)
 
-document_query = gdata.docs.service.DocumentQuery(categories=['folder'])
-document_query.AddNamedFolder(CONFIG['AUTHOR_EMAIL'], CONFIG['ROOT_FOLDER'])
-feed = docsClient.QueryDocumentListFeed(document_query.ToUri())
+root_feed_url = CONFIG['FEED_URL_PREFIX'] + '-/folder' + '?v=3'
+# document_query = gdata.docs.service.DocumentQuery(categories=['folder'])
+document_query = gdata.docs.service.DocumentQuery(feed=root_feed_url)
+# document_query.AddNamedFolder(CONFIG['AUTHOR_EMAIL'], CONFIG['ROOT_FOLDER'])
+# feed = docsClient.QueryDocumentListFeed(document_query.ToUri())
+root_feed = docsClient.QueryDocumentListFeed(uri=root_feed_url)
 
-for entry in feed.entry:
-	title = entry.title.text.encode('UTF-8') 
-	email = entry.author[0].email.text
-	feed_url = CONFIG['FEED_URL_PREFIX'] + urllib.quote(entry.resourceId.text) + '/contents?v=3'
+for root_entry in sorted(root_feed.entry):
+	title = root_entry.title.text.encode('UTF-8') 
+	email = root_entry.author[0].email.text
+	if title != CONFIG['ROOT_FOLDER']:
+		continue
+	feed_url = CONFIG['FEED_URL_PREFIX'] + urllib.quote(root_entry.resourceId.text) + '/contents?v=3'
 	document_query = gdata.docs.service.DocumentQuery(feed=feed_url)
-	inner_feed = docsClient.QueryDocumentListFeed(uri=feed_url)
-	for inner_entry in sorted(inner_feed.entry):
-		video_title = inner_entry.title.text.encode('UTF-8')
-		if ('[Conflict]' in video_title) and CONFIG['IGNORE_CONFLICT_FILES']:
-			continue
-		print("Checking file %s" % video_title)
-		file_path = os.path.join(CONFIG['VIDEOS_FOLDER'], video_title)
-		if os.path.exists(file_path):
-			print("File %s already exists. Skipping." % video_title)
-			continue
-		media = docsClient.GetMedia(inner_entry.content.src)
-		print("Downloading file %s(%s) [%s bytes]" % (video_title, media.content_type, media.content_length))
-		data = media.file_handle.read()
-		with open(file_path, 'w') as f:
-			f.write(data)
-			f.close()
-			print("Saved file %s(%s) [%s bytes]" % (video_title, media.content_type, media.content_length))
+	feed = docsClient.QueryDocumentListFeed(uri=feed_url)
+	for entry in sorted(feed.entry):
+		title = entry.title.text.encode('UTF-8') 
+		email = entry.author[0].email.text
+		print("Looking at folder %s [%s]" % (title, entry.resourceId.text))
+		feed_url = CONFIG['FEED_URL_PREFIX'] + urllib.quote(entry.resourceId.text) + '/contents?v=3&max-results=1000'
+		document_query = gdata.docs.service.DocumentQuery(feed=feed_url)
+		inner_feed = docsClient.QueryDocumentListFeed(uri=feed_url)
+		for inner_entry in sorted(inner_feed.entry):
+			video_title = inner_entry.title.text.encode('UTF-8')
+			if ('[Conflict]' in video_title) and CONFIG['IGNORE_CONFLICT_FILES']:
+				continue
+			if not video_title.endswith('.flv') and CONFIG['DOWNLOAD_FLV_ONLY']:
+				continue
+			print("Checking file %s" % video_title)
+			file_path = os.path.join(CONFIG['VIDEOS_FOLDER'], video_title)
+			if os.path.exists(file_path):
+				print("File %s already exists. Skipping." % video_title)
+				continue
+			media = docsClient.GetMedia(inner_entry.content.src)
+			print("Downloading file %s(%s) [%s bytes]" % (video_title, media.content_type, media.content_length))
+			data = media.file_handle.read()
+			with open(file_path, 'w') as f:
+				f.write(data)
+				f.close()
+				print("Saved file %s(%s) [%s bytes]" % (video_title, media.content_type, media.content_length))
 
 if not os.path.exists(CONFIG['VIDEO_TEST_PAGES_FOLDER']):
 	os.mkdir(CONFIG['VIDEO_TEST_PAGES_FOLDER'])
