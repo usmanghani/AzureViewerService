@@ -73,7 +73,7 @@
         </div>-->
         <div class="pages_content_slide">
              <div class="slide">
-        	 <img src="../images/Test_slide_a.png" height="500px" width="890px" alt="Slide" />
+        	 <img src="../images/Test_slide_a_new.png" height="500px" width="890px" alt="Slide" />
              </div>
         	  <div class="mid_lesson_form_wrap1">
                 <a class="left" href="#">Left</a>
