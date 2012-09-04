@@ -23,6 +23,12 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "hilal.settings")
 from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
 
+import newrelic.agent
+folderpath = os.path.dirname(os.path.abspath(__file__))
+newrelic.agent.initialize(os.path.join(folderpath, '../../newrelic.ini'))
+
+application = newrelic.agent.wsgi_application()(application)
+
 # Apply WSGI middleware here.
 # from helloworld.wsgi import HelloWorldApplication
 # application = HelloWorldApplication(application)
