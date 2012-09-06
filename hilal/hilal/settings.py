@@ -95,6 +95,20 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
+import os
+import os.path
+
+folderpath = os.path.dirname(os.path.abspath(__file__))
+codepath = (os.path.join(folderpath, '../../'))
+
+
+RATCHET = {
+    'access_token': '8d56fe6efe024ad2981661616f9ab010',
+    'environment': 'development' if DEBUG else 'production',
+    'branch': 'ratchet',
+    'root': codepath, 
+}
+
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -103,6 +117,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_ratchet.middleware.RatchetNotifierMiddleware',
 )
 
 ROOT_URLCONF = 'hilal.urls'

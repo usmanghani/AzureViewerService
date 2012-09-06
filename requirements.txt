@@ -8,3 +8,5 @@ simplejson
 dj-database-url
 lxml
 newrelic
+django-ratchet
+
