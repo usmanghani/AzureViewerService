@@ -154,7 +154,9 @@ class PrayTimes():
 	#-------------------- Interface Functions --------------------
 
 	def setMethod(self, method):
-		if method in self.methods:
+            # import pdb;pdb.set_trace()
+            for m in self.methods:
+		if method.lower() == m.lower(): 
 			self.adjust(self.methods[method]['params'])
 			self.calcMethod = method
 

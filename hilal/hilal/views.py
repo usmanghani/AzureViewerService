@@ -39,10 +39,22 @@ def timezone(lat, lng):
 	# return int(root.offset), dst  
 	return int(rawOffset), dst
 
+def resolve_method(method):
+         selected_method = DEFAULT_METHOD
+         method = method.lower()
+         for m in p.methods:
+           if m.lower() == method:
+             selected_method = m
+         return selected_method
 def calculate_pray(start_date, end_date, location, method, asr_method):
 	try:
 		if location:
-			p.setMethod(method)
+			# import pdb; pdb.set_trace()
+                        method = resolve_method(method)
+		        p.setMethod(method)
+		        methods = {'Standard': 1, 'Hanafi': 2}
+                        asr_method = asr_method.title()
+		        asr_method =  asr_method if asr_method in methods else DEFAULT_ASR
 			p.adjust({'asr':asr_method})
 			r = requests.get('http://maps.googleapis.com/maps/api/geocode/json?address=%s&sensor=false' % location)
 			geocode = simplejson.loads(r.text)
@@ -59,7 +71,8 @@ def calculate_pray(start_date, end_date, location, method, asr_method):
 			response = []
 			for single_date in [d for d in (start_date + timedelta(n) for n in range(day_count)) if d < end_date]:
 				times = p.getTimes(single_date, (lat, lng), offset, dst)
-				response.append({'date':single_date.strftime("%Y-%m-%d"), 'address': address, 'latitude' : lat, 'longitude' : lng, 'method': method, 'asr_method' : asr_method, 'offset' : offset, 'dst' : dst, 'times' : times})
+                                method_name = p.methods.get(method, p.methods[DEFAULT_METHOD])['name']
+				response.append({'date':single_date.strftime("%Y-%m-%d"), 'address': address, 'latitude' : lat, 'longitude' : lng, 'method': method_name, 'asr_method' : asr_method, 'offset' : offset, 'dst' : dst, 'times' : times})
 
 			return HttpResponse(simplejson.dumps(response), content_type='application/json')
 		else:
