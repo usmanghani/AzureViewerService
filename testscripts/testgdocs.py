@@ -13,7 +13,7 @@ from pprint import pprint
 
 CONFIG = {
 	'FEED_URL_PREFIX' : 'https://docs.google.com/feeds/default/private/full/',
-	'ROOT_FOLDER' : 'Final_Videos',
+	'ROOT_FOLDER' : 'Lisanic Videos',
 	'AUTHOR_EMAIL' : 'productionroadways@gmail.com',
 	'VIDEOS_FOLDER' : 'videos_test',
 	'VIDEO_TEST_PAGES_FOLDER' : 'videotestpages',
@@ -21,10 +21,12 @@ CONFIG = {
 	'TEMPLATE_FILENAME' : 'lesson_template.php',
 	'TEST_FILE_PREFIX' : 'lesson_',
 	'OVERWRITE_EXISTING_TEST_FILES' : False,
-	'URL_DUMP_PAGE' : 'urldumps.txt',
+	'URL_DUMP_PAGE' : 'urldumps_v2.txt',
 	'URL_PREFIX_FOR_DUMPS' : 'http://test.lisanic.com/',
 	'URL_DUMP_TEMPLATE_FILE' : 'urldumps_template.html',
 	'DOWNLOAD_FLV_ONLY' : True,
+	'INCLUDE_EXTENSIONS': ['FLV', 'MP4', 'OGV', 'WEBM'],
+	'INCLUDE_DIRS': ['0-99', '100-199', '200-299'],
 }
 
 if not os.path.exists(CONFIG['VIDEOS_FOLDER']):
@@ -55,6 +57,9 @@ for root_entry in sorted(root_feed.entry):
 		title = entry.title.text.encode('UTF-8') 
 		email = entry.author[0].email.text
 		print("Looking at folder %s [%s]" % (title, entry.resourceId.text))
+		if not title.upper() in CONFIG['INCLUDE_DIRS']:
+			print("Skipping folder %s because its not in the list in config." % title)
+			continue
 		feed_url = CONFIG['FEED_URL_PREFIX'] + urllib.quote(entry.resourceId.text) + '/contents?v=3&max-results=1000'
 		document_query = gdata.docs.service.DocumentQuery(feed=feed_url)
 		inner_feed = docsClient.QueryDocumentListFeed(uri=feed_url)
@@ -62,7 +67,9 @@ for root_entry in sorted(root_feed.entry):
 			video_title = inner_entry.title.text.encode('UTF-8')
 			if ('[Conflict]' in video_title) and CONFIG['IGNORE_CONFLICT_FILES']:
 				continue
-			if not video_title.endswith('.flv') and CONFIG['DOWNLOAD_FLV_ONLY']:
+			fileNameWithoutExtension, fileExtension = os.path.splitext(video_title)
+			if not fileExtension.upper() in CONFIG['INCLUDE_EXTENSIONS']:
+			#if not video_title.endswith('.flv') and CONFIG['DOWNLOAD_FLV_ONLY']:
 				continue
 			print("Checking file %s" % video_title)
 			file_path = os.path.join(CONFIG['VIDEOS_FOLDER'], video_title)
