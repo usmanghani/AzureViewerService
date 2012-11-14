@@ -57,7 +57,7 @@ for root_entry in sorted(root_feed.entry):
 		title = entry.title.text.encode('UTF-8') 
 		email = entry.author[0].email.text
 		print("Looking at folder %s [%s]" % (title, entry.resourceId.text))
-		if not title.upper() in CONFIG['INCLUDE_DIRS']:
+		if not title.strip().upper() in CONFIG['INCLUDE_DIRS']:
 			print("Skipping folder %s because its not in the list in config." % title)
 			continue
 		feed_url = CONFIG['FEED_URL_PREFIX'] + urllib.quote(entry.resourceId.text) + '/contents?v=3&max-results=1000'
@@ -68,7 +68,7 @@ for root_entry in sorted(root_feed.entry):
 			if ('[Conflict]' in video_title) and CONFIG['IGNORE_CONFLICT_FILES']:
 				continue
 			fileNameWithoutExtension, fileExtension = os.path.splitext(video_title)
-			if not fileExtension.upper() in CONFIG['INCLUDE_EXTENSIONS']:
+			if not fileExtension.strip().upper() in CONFIG['INCLUDE_EXTENSIONS']:
 			#if not video_title.endswith('.flv') and CONFIG['DOWNLOAD_FLV_ONLY']:
 				continue
 			print("Checking file %s" % video_title)
