@@ -26,7 +26,7 @@ CONFIG = {
 	'URL_DUMP_TEMPLATE_FILE' : 'urldumps_template.html',
 	'DOWNLOAD_FLV_ONLY' : True,
 	'INCLUDE_EXTENSIONS': ['FLV', 'MP4', 'OGV', 'WEBM'],
-	'INCLUDE_DIRS': ['0-99', '100-199', '200-299'],
+	'INCLUDE_DIRS': ['0-199', '200-299', '300-399'],
 }
 
 if not os.path.exists(CONFIG['VIDEOS_FOLDER']):
