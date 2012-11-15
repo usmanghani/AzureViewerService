@@ -20,6 +20,7 @@ CONFIG = {
 	'IGNORE_CONFLICT_FILES' : True,
 	'TEMPLATE_FILENAME' : 'lesson_template.php',
 	'TEST_FILE_PREFIX' : 'lesson_',
+	'OVERWRITE_EXISTING_VIDEO_FILES' : True,
 	'OVERWRITE_EXISTING_TEST_FILES' : False,
 	'URL_DUMP_PAGE' : 'urldumps_v2.txt',
 	'URL_PREFIX_FOR_DUMPS' : 'http://test.lisanic.com/',
@@ -65,15 +66,17 @@ for root_entry in sorted(root_feed.entry):
 		inner_feed = docsClient.QueryDocumentListFeed(uri=feed_url)
 		for inner_entry in sorted(inner_feed.entry):
 			video_title = inner_entry.title.text.encode('UTF-8')
+			print("Checking file %s" % video_title)
 			if ('[Conflict]' in video_title) and CONFIG['IGNORE_CONFLICT_FILES']:
+				print("Skipping file %s because it is a conflict file." % video_title)
 				continue
 			fileNameWithoutExtension, fileExtension = os.path.splitext(video_title)
 			if not fileExtension.strip().upper() in CONFIG['INCLUDE_EXTENSIONS']:
 			#if not video_title.endswith('.flv') and CONFIG['DOWNLOAD_FLV_ONLY']:
+				print("Skipping file %s because it doesn't have an extension included in the list." % video_title)
 				continue
-			print("Checking file %s" % video_title)
 			file_path = os.path.join(CONFIG['VIDEOS_FOLDER'], video_title)
-			if os.path.exists(file_path):
+			if os.path.exists(file_path) and not CONFIG['OVERWRITE_EXISTING_VIDEO_FILES']:
 				print("File %s already exists. Skipping." % video_title)
 				continue
 			media = docsClient.GetMedia(inner_entry.content.src)
