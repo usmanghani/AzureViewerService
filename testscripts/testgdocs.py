@@ -26,7 +26,7 @@ CONFIG = {
 	'URL_PREFIX_FOR_DUMPS' : 'http://test.lisanic.com/',
 	'URL_DUMP_TEMPLATE_FILE' : 'urldumps_template.html',
 	'DOWNLOAD_FLV_ONLY' : True,
-	'INCLUDE_EXTENSIONS': ['FLV', 'MP4', 'OGV', 'WEBM'],
+	'INCLUDE_EXTENSIONS': ['.FLV', '.MP4', '.OGV', '.WEBM'],
 	'INCLUDE_DIRS': ['0-199', '200-299', '300-399'],
 }
 
@@ -73,7 +73,7 @@ for root_entry in sorted(root_feed.entry):
 			fileNameWithoutExtension, fileExtension = os.path.splitext(video_title)
 			if not fileExtension.strip().upper() in CONFIG['INCLUDE_EXTENSIONS']:
 			#if not video_title.endswith('.flv') and CONFIG['DOWNLOAD_FLV_ONLY']:
-				print("Skipping file %s because it doesn't have an extension included in the list." % video_title)
+				print("Skipping file %s with extension %s because it doesn't have an extension included in the list." % (video_title, fileExtension.strip().upper()))
 				continue
 			file_path = os.path.join(CONFIG['VIDEOS_FOLDER'], video_title)
 			if os.path.exists(file_path) and not CONFIG['OVERWRITE_EXISTING_VIDEO_FILES']:
