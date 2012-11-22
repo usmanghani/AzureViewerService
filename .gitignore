@@ -5,3 +5,4 @@ local_settings.py
 lib
 bin
 include
+.DS_Store
