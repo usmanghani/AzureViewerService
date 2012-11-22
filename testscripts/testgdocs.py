@@ -20,7 +20,7 @@ CONFIG = {
 	'IGNORE_CONFLICT_FILES' : True,
 	'TEMPLATE_FILENAME' : 'lesson_template.php',
 	'TEST_FILE_PREFIX' : 'lesson_',
-	'OVERWRITE_EXISTING_VIDEO_FILES' : True,
+	'OVERWRITE_EXISTING_VIDEO_FILES' : False,
 	'OVERWRITE_EXISTING_TEST_FILES' : False,
 	'URL_DUMP_PAGE' : 'urldumps_v2.txt',
 	'URL_PREFIX_FOR_DUMPS' : 'http://test.lisanic.com/',
@@ -75,7 +75,7 @@ for root_entry in sorted(root_feed.entry):
 			#if not video_title.endswith('.flv') and CONFIG['DOWNLOAD_FLV_ONLY']:
 				print("Skipping file %s with extension %s because it doesn't have an extension included in the list." % (video_title, fileExtension.strip().upper()))
 				continue
-			file_path = os.path.join(CONFIG['VIDEOS_FOLDER'], video_title)
+			file_path = os.path.join(CONFIG['VIDEOS_FOLDER'], video_title.strip().replace(' ', ''))
 			if os.path.exists(file_path) and not CONFIG['OVERWRITE_EXISTING_VIDEO_FILES']:
 				print("File %s already exists. Skipping." % video_title)
 				continue
